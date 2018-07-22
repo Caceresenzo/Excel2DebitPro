@@ -1,0 +1,8 @@
+Référence;Désignation;Nombre;Longueur;Largeur;Epaisseur;Essence;Sens du fil
+m;Piece1;8;320;750;0;Non spécifié;2
+n;Piece2;9;320;751;0;Non spécifié;2
+o;Piece3;10;320;752;0;Non spécifié;2
+p;Piece4;11;320;753;0;Non spécifié;2
+q;Piece5;12;320;754;0;Non spécifié;2
+r;Piece6;13;320;755;0;Non spécifié;2
+s;Piece7;14;320;756;0;Non spécifié;2

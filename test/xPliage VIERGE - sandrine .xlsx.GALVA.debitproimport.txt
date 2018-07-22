@@ -1,0 +1,4 @@
+Référence;Désignation;Nombre;Longueur;Largeur;Epaisseur;Essence;Sens du fil
+a;Piece1;12;1250;350;0;Non spécifié;2
+b;Piece2;1;452;512;0;Non spécifié;2
+c;Piece3;415;452;512;0;Non spécifié;2
