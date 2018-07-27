@@ -6,14 +6,14 @@ import java.util.List;
 
 import caceresenzo.apps.excel2debitpro.models.CutPage;
 import caceresenzo.apps.excel2debitpro.models.DebitProCut;
-import caceresenzo.apps.excel2debitpro.utils.Utils;
+import caceresenzo.libs.filesystem.FileChecker;
 import caceresenzo.libs.parse.ParseUtils;
 
 public class SimpleCsvCutCodec extends CutCodec {
 	
 	@Override
 	public List<CutPage> read(File file) throws Exception {
-		String data = Utils.read(file);
+		String data = FileChecker.checkFileAndRead(file, "csv");
 		String[] lines = data.split("\n");
 		
 		List<CutPage> cutPages = new ArrayList<CutPage>();

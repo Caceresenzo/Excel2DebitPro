@@ -15,7 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import caceresenzo.apps.excel2debitpro.config.Config;
 import caceresenzo.apps.excel2debitpro.models.CutPage;
 import caceresenzo.apps.excel2debitpro.models.DebitProCut;
-import caceresenzo.apps.excel2debitpro.utils.Utils;
+import caceresenzo.libs.filesystem.FileChecker;
 import caceresenzo.libs.parse.ParseUtils;
 
 public class ExcelCutCodec extends CutCodec {
@@ -25,7 +25,7 @@ public class ExcelCutCodec extends CutCodec {
 	
 	@Override
 	public List<CutPage> read(File file) throws Exception {
-		Utils.checkFile(file, "xlsx", false);
+		FileChecker.checkFile(file, "xlsx", false);
 		
 		Iterator<String> dataIterator = getData(file).iterator();
 		List<CutPage> cutPages = new ArrayList<CutPage>();
