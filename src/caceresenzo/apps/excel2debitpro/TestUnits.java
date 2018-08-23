@@ -1,15 +1,5 @@
 package caceresenzo.apps.excel2debitpro;
 
-import java.io.File;
-import java.util.List;
-
-import caceresenzo.apps.excel2debitpro.codec.DebitProImportCodec;
-import caceresenzo.apps.excel2debitpro.codec.ExcelCutCodec;
-import caceresenzo.apps.excel2debitpro.codec.SimpleCsvCutCodec;
-import caceresenzo.apps.excel2debitpro.models.CutPage;
-import caceresenzo.apps.excel2debitpro.models.DebitProCut;
-import caceresenzo.libs.logger.Logger;
-
 public class TestUnits {
 	
 	public static void main(String[] args) throws Exception {
@@ -34,7 +24,7 @@ public class TestUnits {
 		// new DebitProImportCodec().save(new File("debitpro.txt"), cutPages);
 		// Logger.debug("Saved!");
 		
-		List<CutPage> cutPages = new ExcelCutCodec().read(new File("xPliage VIERGE - sandrine .xlsx"));
+		// List<CutPage> cutPages = new ExcelCutCodec().read(new File("xPliage VIERGE - sandrine .xlsx"));
 	}
 	
 }
