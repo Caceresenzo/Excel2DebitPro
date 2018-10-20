@@ -16,7 +16,7 @@ import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import caceresenzo.apps.excel2debitpro.codec.CutCodec;
-import caceresenzo.apps.excel2debitpro.config.Config;
+import caceresenzo.apps.excel2debitpro.config.Constants;
 import caceresenzo.apps.excel2debitpro.models.CutPage;
 import caceresenzo.apps.excel2debitpro.models.DebitProCut;
 import caceresenzo.libs.filesystem.FileChecker;
@@ -25,19 +25,27 @@ import caceresenzo.libs.parse.ParseUtils;
 import caceresenzo.libs.string.SimpleLineStringBuilder;
 import caceresenzo.libs.string.StringUtils;
 
+/**
+ * Codec capable to read excel document
+ * 
+ * @author Enzo CACERES
+ */
 public class ExcelCutCodec extends CutCodec {
 	
+	/* Constants */
 	public static final int MAX_ERROR_COUNT = 30;
 	
 	private static final String DATA_SEPARATOR = ",";
 	private static final String DATA_FILL = "-";
+	
+	public static final int PRINT_COLUMN_SIZE = 10;
 	
 	@Override
 	public List<CutPage> read(File file) throws Exception {
 		FileChecker.checkFile(file, "xlsx", false);
 		
 		Iterator<String> dataIterator = getData(file).iterator();
-		List<CutPage> cutPages = new ArrayList<CutPage>();
+		List<CutPage> cutPages = new ArrayList<>();
 		
 		CutPage sharedCutPage = null;
 		
@@ -54,24 +62,24 @@ public class ExcelCutCodec extends CutCodec {
 				continue;
 			}
 			
-			if (line.matches(".*" + Config.MATCH_PAGE_PANEL_NAME + ".*")) {
+			if (line.matches(".*" + Constants.MATCH_PAGE_PANEL_NAME + ".*")) {
 				String nextLine = dataIterator.next();
 				
 				String panelName = data[0];
 				@SuppressWarnings("unused")
 				String panelThickness = "0.0"; // Useless, but i have to keep-it
 				
-				if (nextLine.matches(".*" + Config.MATCH_PAGE_PANEL_THICKNESS + ".*")) {
+				if (nextLine.matches(".*" + Constants.MATCH_PAGE_PANEL_THICKNESS + ".*")) {
 					panelThickness = nextLine.split(DATA_SEPARATOR)[0];
 				}
 				
-				List<DebitProCut> cuts = new ArrayList<DebitProCut>();
+				List<DebitProCut> cuts = new ArrayList<>();
 				
 				int lastLength = 0, lastWidth = 0;
 				while (dataIterator.hasNext()) { // true, but just for security
 					nextLine = dataIterator.next();
 					
-					if (nextLine.contains(Config.PAGE_SEPARATOR)) {
+					if (nextLine.contains(Constants.PAGE_SEPARATOR)) {
 						break;
 					}
 					
@@ -106,6 +114,16 @@ public class ExcelCutCodec extends CutCodec {
 		return cutPages;
 	}
 	
+	/**
+	 * Get a {@link List} of data.<br>
+	 * This already do a lot of the work, use this data to process information more easely.
+	 * 
+	 * @param file
+	 *            Target excel file
+	 * @return {@link List} of {@link String} formatted like this {@code -,-,<data>,-}
+	 * @throws Exception
+	 *             If anything go wrong
+	 */
 	private List<String> getData(File file) throws Exception {
 		FileInputStream excelFile = new FileInputStream(file);
 		Workbook workbook = new XSSFWorkbook(excelFile);
@@ -194,11 +212,16 @@ public class ExcelCutCodec extends CutCodec {
 		return data;
 	}
 	
+	/**
+	 * Print a prettify version in a table to the console containing all {@link CutPage} of the {@link List}
+	 * 
+	 * @param cutPages
+	 *            Base data to print
+	 */
 	private void printOutput(List<CutPage> cutPages) {
-		int columnSize = 10;
-		String format = "| %-" + columnSize + "s | %-" + columnSize + "s | %-" + columnSize + "s | %-" + columnSize + "s | %-" + columnSize + "s | %-" + columnSize + "s |";
+		String format = "| %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s |";
 		String seperatorBar = "";
-		for (int i = 0; columnSize > i; i++) {
+		for (int i = 0; PRINT_COLUMN_SIZE > i; i++) {
 			seperatorBar += "-";
 		}
 		String separator = String.format(format.replace("|", "+"), seperatorBar, seperatorBar, seperatorBar, seperatorBar, seperatorBar, seperatorBar);

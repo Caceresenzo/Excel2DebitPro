@@ -10,6 +10,11 @@ import caceresenzo.apps.excel2debitpro.models.DebitProCut;
 import caceresenzo.libs.filesystem.FileChecker;
 import caceresenzo.libs.parse.ParseUtils;
 
+/**
+ * Codec capable to read simple csv document
+ * 
+ * @author Enzo CACERES
+ */
 public class SimpleCsvCutCodec extends CutCodec {
 	
 	@Override
@@ -17,8 +22,8 @@ public class SimpleCsvCutCodec extends CutCodec {
 		String data = FileChecker.checkFileAndRead(file, "csv");
 		String[] lines = data.split("\n");
 		
-		List<CutPage> cutPages = new ArrayList<CutPage>();
-		List<DebitProCut> cuts = new ArrayList<DebitProCut>();
+		List<CutPage> cutPages = new ArrayList<>();
+		List<DebitProCut> cuts = new ArrayList<>();
 		
 		String stopReference = lines[0].split(",")[1];
 		

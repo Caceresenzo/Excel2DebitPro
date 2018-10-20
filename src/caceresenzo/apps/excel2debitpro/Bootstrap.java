@@ -104,7 +104,7 @@ public class Bootstrap {
 				}
 			}
 			
-			new DebitProImportCodec().save(inputFile, codec.read(inputFile));
+			new DebitProImportCodec().write(inputFile, codec.read(inputFile));
 		} catch (Exception exception) {
 			Logger.exception(exception, "Failed to convert.");
 			
