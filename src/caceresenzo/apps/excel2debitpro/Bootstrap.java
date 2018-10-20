@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -16,13 +15,14 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
-import caceresenzo.apps.excel2debitpro.codec.DebitProImportCodec;
-import caceresenzo.apps.excel2debitpro.codec.ExcelCutCodec;
-import caceresenzo.apps.excel2debitpro.codec.SimpleCsvCutCodec;
+import caceresenzo.apps.excel2debitpro.codec.CutCodec;
+import caceresenzo.apps.excel2debitpro.codec.implementations.DebitProImportCodec;
+import caceresenzo.apps.excel2debitpro.codec.implementations.ExcelCutCodec;
+import caceresenzo.apps.excel2debitpro.codec.implementations.SimpleCsvCutCodec;
 import caceresenzo.apps.excel2debitpro.config.Language;
-import caceresenzo.apps.excel2debitpro.models.CutPage;
 import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.internationalization.i18n;
+import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
 
 public class Bootstrap {
@@ -31,9 +31,7 @@ public class Bootstrap {
 		i18n.setDebug(false);
 		Language.getLanguage().initialize();
 		
-		/*
-		 * CLI parsing
-		 */
+		/* CLI parsing */
 		Options options = new Options();
 		
 		Option guiOption = new Option("g", "gui", false, "enable the gui");
@@ -44,6 +42,10 @@ public class Bootstrap {
 		Option inputOption = new Option("i", "input", true, "input file");
 		inputOption.setRequired(true);
 		options.addOption(inputOption);
+		
+		Option commentOption = new Option("c", "comment", true, "add comment to the line");
+		commentOption.setRequired(false);
+		options.addOption(commentOption);
 		
 		Option logOption = new Option("l", "log", true, "log output");
 		logOption.setRequired(false);
@@ -56,7 +58,8 @@ public class Bootstrap {
 		try {
 			commandLine = parser.parse(options, args);
 		} catch (ParseException exception) {
-			System.out.println(exception.getMessage());
+			Logger.exception(exception, "Failed to parse command line;");
+			
 			formatter.printHelp("utility-name", options);
 			
 			JOptionPane.showMessageDialog(null, i18n.getString("error.parse-cli", exception.getLocalizedMessage()), i18n.getString("error.title"), JOptionPane.ERROR_MESSAGE);
@@ -69,34 +72,41 @@ public class Bootstrap {
 		boolean enableLog = ParseUtils.parseBoolean(commandLine.getOptionValue("log"), true);
 		File inputFile = new File(commandLine.getOptionValue("input"));
 		
+		/* Logs */
 		if (!enableLog) {
 			File logOutput = new File("./excel2debitpro.log");
 			try {
 				logOutput.createNewFile();
 				System.setOut(new PrintStream(new FileOutputStream(logOutput)));
 			} catch (IOException exception) {
-				exception.printStackTrace();
+				Logger.exception(exception, "Failed to create log file.");
 			}
 		}
 		
-		List<CutPage> cutPages = null;
-		
+		/* Conversion */
 		try {
-			switch (FileUtils.getExtension(inputFile)) {
-				case ".csv":
-					cutPages = new SimpleCsvCutCodec().read(inputFile);
+			String extension = FileUtils.getExtension(inputFile);
+			
+			CutCodec codec = null;
+			switch (extension) {
+				case ".csv": {
+					codec = new SimpleCsvCutCodec();
 					break;
-				case ".xlsx":
-					cutPages = new ExcelCutCodec().read(inputFile);
-					break;
+				}
 				
-				default:
+				case ".xlsx": {
+					codec = new ExcelCutCodec();
 					break;
+				}
+				
+				default: {
+					throw new IllegalStateException("Unsupported file type: " + extension);
+				}
 			}
 			
-			new DebitProImportCodec().save(inputFile, cutPages);
+			new DebitProImportCodec().save(inputFile, codec.read(inputFile));
 		} catch (Exception exception) {
-			exception.printStackTrace();
+			Logger.exception(exception, "Failed to convert.");
 			
 			JOptionPane.showMessageDialog(null, i18n.getString("error.codec.error", exception.getLocalizedMessage()), i18n.getString("error.title"), JOptionPane.ERROR_MESSAGE);
 		}

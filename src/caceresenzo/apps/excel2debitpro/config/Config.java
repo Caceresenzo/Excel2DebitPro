@@ -7,8 +7,4 @@ public class Config {
 	
 	public static String PAGE_SEPARATOR = "TOTAL QTE";
 	
-	public Config() {
-		// TODO Auto-generated constructor stub
-	}
-	
 }

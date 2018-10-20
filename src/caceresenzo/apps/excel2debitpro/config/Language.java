@@ -30,6 +30,9 @@ public class Language {
 			o("error.title", "Erreur");
 			o("error.parse-cli", "Erreur, l'interpreteur de commande à renvoyé une erreur: %s");
 			o("error.codec.error", "Erreur, le convertisseur à rencontrer une erreur: %s\nVoir la console pour plus d'information.");
+
+			o("warning.title", "Attention");
+			o("warning.codec.cell.unsupported-type", "Attention, la cellule %s ne contient pas d'information valide.\nType: %s");
 		}
 		
 	}
