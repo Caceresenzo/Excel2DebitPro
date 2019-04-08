@@ -10,7 +10,7 @@ import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.string.SimpleLineStringBuilder;
 
 /**
- * Codec capable to generate output from a {@link List} of {@link CutPage} usable for the other software
+ * Codec capable to generate output from a {@link List} of {@link CutPage} usable for the other software.
  * 
  * @author Enzo CACERES
  */
@@ -18,8 +18,8 @@ public class DebitProImportCodec extends CutCodec {
 	
 	/* Constants */
 	public static final String FILE_NAME_FORMAT = "%s.%s.debitproimport.txt";
-	public static final String FILE_HEADER = "Référence;Désignation;Nombre;Longueur;Largeur;Epaisseur;Essence;Sens du fil\n";
-	public static final String FILE_ITEM = "%s;%s;%s;%s;%s;%s;Non spécifié;2";
+	public static final String FILE_HEADER = "RÃ©fÃ©rence;DÃ©signation;Nombre;Longueur;Largeur;Epaisseur;Essence;Sens du fil\n";
+	public static final String FILE_ITEM = "%s;%s;%s;%s;%s;%s;Non spÃ©cifiÃ©;2";
 	public static final String FILE_ITEM_NAME = "Piece%s";
 	
 	@Override

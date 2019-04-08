@@ -26,7 +26,7 @@ import caceresenzo.libs.string.SimpleLineStringBuilder;
 import caceresenzo.libs.string.StringUtils;
 
 /**
- * Codec capable to read excel document
+ * Codec capable to read excel document.
  * 
  * @author Enzo CACERES
  */
@@ -67,7 +67,7 @@ public class ExcelCutCodec extends CutCodec {
 				
 				String panelName = data[0];
 				@SuppressWarnings("unused")
-				String panelThickness = "0.0"; // Useless, but i have to keep-it
+				String panelThickness = "0.0"; /* Useless, but i have to keep-it */
 				
 				if (nextLine.matches(".*" + Constants.MATCH_PAGE_PANEL_THICKNESS + ".*")) {
 					panelThickness = nextLine.split(DATA_SEPARATOR)[0];
@@ -76,8 +76,10 @@ public class ExcelCutCodec extends CutCodec {
 				List<DebitProCut> cuts = new ArrayList<>();
 				
 				int lastLength = 0, lastWidth = 0;
-				while (dataIterator.hasNext()) { // true, but just for security
+				while (dataIterator.hasNext()) { /* true, but just for security */
 					nextLine = dataIterator.next();
+					
+					System.out.println(String.format("Processing line: %s", nextLine));
 					
 					if (nextLine.contains(Constants.PAGE_SEPARATOR)) {
 						break;
@@ -100,7 +102,9 @@ public class ExcelCutCodec extends CutCodec {
 					lastWidth = width;
 				}
 				
-				sharedCutPage = new CutPage(panelName, cuts);
+				if (!cuts.isEmpty()) {
+					sharedCutPage = new CutPage(panelName, cuts);
+				}
 			}
 			
 			if (sharedCutPage != null) {
@@ -108,7 +112,8 @@ public class ExcelCutCodec extends CutCodec {
 				sharedCutPage = null;
 			}
 		}
-		
+
+		System.out.println();
 		printOutput(cutPages);
 		
 		return cutPages;
@@ -119,10 +124,10 @@ public class ExcelCutCodec extends CutCodec {
 	 * This already do a lot of the work, use this data to process information more easely.
 	 * 
 	 * @param file
-	 *            Target excel file
-	 * @return {@link List} of {@link String} formatted like this {@code -,-,<data>,-}
+	 *            Target excel file.
+	 * @return {@link List} of {@link String} formatted like this {@code -,-,<data>,-}.
 	 * @throws Exception
-	 *             If anything go wrong
+	 *             If anything go wrong.
 	 */
 	private List<String> getData(File file) throws Exception {
 		FileInputStream excelFile = new FileInputStream(file);
@@ -162,6 +167,10 @@ public class ExcelCutCodec extends CutCodec {
 					}
 					
 					default: {
+						if (cellLine.contains(Constants.PAGE_SEPARATOR)) {
+							continue;
+						}
+						
 						CellAddress currentCellAddress = currentCell.getAddress();
 						
 						int dividend = currentCellAddress.getColumn() + 1, modulo;
@@ -185,6 +194,7 @@ public class ExcelCutCodec extends CutCodec {
 					cellLine += cellData + (cellIterator.hasNext() ? DATA_SEPARATOR : "");
 				}
 			}
+			
 			data.add(cellLine);
 		}
 		
@@ -213,17 +223,14 @@ public class ExcelCutCodec extends CutCodec {
 	}
 	
 	/**
-	 * Print a prettify version in a table to the console containing all {@link CutPage} of the {@link List}
+	 * Print a prettify version in a table to the console containing all {@link CutPage} of the {@link List}.
 	 * 
 	 * @param cutPages
-	 *            Base data to print
+	 *            Base data to print.
 	 */
 	private void printOutput(List<CutPage> cutPages) {
 		String format = "| %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s | %-" + PRINT_COLUMN_SIZE + "s |";
-		String seperatorBar = "";
-		for (int i = 0; PRINT_COLUMN_SIZE > i; i++) {
-			seperatorBar += "-";
-		}
+		String seperatorBar = StringUtils.multiplySequence( "-", PRINT_COLUMN_SIZE);
 		String separator = String.format(format.replace("|", "+"), seperatorBar, seperatorBar, seperatorBar, seperatorBar, seperatorBar, seperatorBar);
 		
 		System.out.println(separator);

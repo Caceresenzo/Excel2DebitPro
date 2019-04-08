@@ -24,10 +24,16 @@ import caceresenzo.libs.filesystem.FileUtils;
 import caceresenzo.libs.internationalization.i18n;
 import caceresenzo.libs.logger.Logger;
 import caceresenzo.libs.parse.ParseUtils;
+import caceresenzo.libs.timer.InstructionTimer;
 
 public class Bootstrap {
 	
 	public static void main(String[] args) {
+		InstructionTimer instructionTimer = new InstructionTimer();
+		
+		System.out.println("Starting...");
+		System.out.println();
+		
 		i18n.setDebug(false);
 		Language.getLanguage().initialize();
 		
@@ -49,7 +55,7 @@ public class Bootstrap {
 		
 		Option logOption = new Option("l", "log", true, "log output");
 		logOption.setRequired(false);
-		guiOption.setType(Boolean.class);
+		logOption.setType(Boolean.class);
 		options.addOption(logOption);
 		
 		CommandLineParser parser = new DefaultParser();
@@ -110,6 +116,9 @@ public class Bootstrap {
 			
 			JOptionPane.showMessageDialog(null, i18n.getString("error.codec.error", exception.getLocalizedMessage()), i18n.getString("error.title"), JOptionPane.ERROR_MESSAGE);
 		}
+
+		System.out.println();
+		System.out.println(String.format("Execution finished. (lasted: %s)", instructionTimer.toString()));
 	}
 	
 }
